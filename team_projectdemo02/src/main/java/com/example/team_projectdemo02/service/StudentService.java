@@ -5,13 +5,13 @@ import com.example.team_projectdemo02.entity.Student;
 import java.util.List;
 
 public interface StudentService {
-    void add(Student student);
+    void addStudentRedis(Student student);
 
-    void delete(String id);
+    void deleteStudentRedis(String id);
 
-    Student findById(String id);
+    Student getStudentRedis(String id);
 
-    List<Student> findAll();
+    List<Student> querypage(String id);
 
-    void  update(Student student);
+    void  updateStudentRedis(Student student);
 }

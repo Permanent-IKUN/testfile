@@ -1,5 +1,6 @@
 package com.example.team_projectdemo02.mapping;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.team_projectdemo02.entity.Student;
 import lombok.Getter;
 import org.apache.ibatis.annotations.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
 
 @Mapper
-public interface StudentMapper {
+public interface StudentMapper extends BaseMapper<Student> {
     @Insert("INSERT INTO student(id,name,chinese,math,english) VALUES (#{id},#{name},#{chinese},#{math},#{english})")
     void insertStudent(Student student);
 
