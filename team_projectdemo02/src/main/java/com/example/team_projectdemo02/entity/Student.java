@@ -10,10 +10,10 @@ import lombok.Data;
 import javax.print.DocFlavor;
 
 @Data
-@TableName(value = "student", schema = "test")
+@TableName(value = "student", schema = "demo")
 public class Student {
     @TableId(type = IdType.AUTO)
-    String id;
+    Integer id;
     String name;
     String chinese;
     String math;

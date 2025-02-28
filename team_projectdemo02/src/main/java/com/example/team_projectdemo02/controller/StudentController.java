@@ -1,15 +1,12 @@
 package com.example.team_projectdemo02.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.team_projectdemo02.entity.Student;
-import com.example.team_projectdemo02.mapping.StudentMapper;
+import com.example.team_projectdemo02.model.BasicPageResultVO;
+import com.example.team_projectdemo02.model.PageStudent;
 import com.example.team_projectdemo02.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("student")
@@ -18,6 +15,12 @@ import java.util.List;
 public class StudentController {
 
     final StudentService studentService;
+    @PostMapping("add")
+    public ResponseEntity<Student> add(@RequestBody Student student){
+        studentService.add(student);
+        return ResponseEntity.ok(student);
+    }
+
     @PostMapping("redis/add")
     public ResponseEntity<Student> addStudentRedis(@RequestBody Student student) {
 
@@ -41,10 +44,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentRedis(id));
     }
 
-    @GetMapping("findAll")
-    public IPage<Student> studentIPage(@PathVariable String id) {
-        
+    @GetMapping("/list")
+    public ResponseEntity<BasicPageResultVO> getStudentPage(PageStudent PageStudent) {
+        return ResponseEntity.ok(studentService.getStudentPage(PageStudent));
     }
+
 
 
     @PutMapping("redis/update/{id}")
@@ -54,4 +58,6 @@ public class StudentController {
 
         return ResponseEntity.ok(student);
     }
+
+
 }
