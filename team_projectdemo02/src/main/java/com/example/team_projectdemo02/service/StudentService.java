@@ -7,6 +7,8 @@ import com.example.team_projectdemo02.model.PageStudent;
 public interface StudentService {
 
     void add(Student student);
+
+    void delete(String id);
     void addStudentRedis(Student student);
 
     void deleteStudentRedis(String id);

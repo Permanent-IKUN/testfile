@@ -3,9 +3,11 @@ package com.example.team_projectdemo02.controller;
 import com.example.team_projectdemo02.entity.Student;
 import com.example.team_projectdemo02.model.BasicPageResultVO;
 import com.example.team_projectdemo02.model.PageStudent;
+import com.example.team_projectdemo02.model.ResponseVO;
 import com.example.team_projectdemo02.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,13 +18,20 @@ public class StudentController {
 
     final StudentService studentService;
     @PostMapping("add")
-    public ResponseEntity<Student> add(@RequestBody Student student){
+    public ResponseVO<Object> add(@RequestBody @Validated Student student){
         studentService.add(student);
-        return ResponseEntity.ok(student);
+        return ResponseVO.SUCCESS();
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseVO<?> deleteByStudentId(@PathVariable @Validated String id){
+        studentService.delete(id);
+        return ResponseVO.SUCCESS();
+//        return ResponseEntity.ok().build();
     }
 
     @PostMapping("redis/add")
-    public ResponseEntity<Student> addStudentRedis(@RequestBody Student student) {
+    public ResponseEntity<Student> addStudentRedis(@RequestBody @Validated Student student) {
 
         studentService.addStudentRedis(student);
 
@@ -32,7 +41,7 @@ public class StudentController {
     }
 
     @DeleteMapping("redis/delete/{id}")
-    public ResponseEntity<Void> deleteStudentRedis(@PathVariable String id) {
+    public ResponseEntity<Void> deleteStudentRedis(@PathVariable @Validated String id) {
 
         studentService.deleteStudentRedis(id);
 
@@ -40,13 +49,16 @@ public class StudentController {
     }
 
     @GetMapping("redis/get/{id}")
-    public ResponseEntity<Student> getStudentRedis(@PathVariable String id){
+    public ResponseEntity<Student> getStudentRedis(@PathVariable @Validated String id){
         return ResponseEntity.ok(studentService.getStudentRedis(id));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<BasicPageResultVO> getStudentPage(PageStudent PageStudent) {
-        return ResponseEntity.ok(studentService.getStudentPage(PageStudent));
+    public ResponseVO<BasicPageResultVO<Student>> getStudentPage(PageStudent PageStudent) {
+        if (studentService.getStudentPage(PageStudent)==null){
+            return ResponseVO.FAIL();
+        }
+        return ResponseVO.SUCCESS(studentService.getStudentPage(PageStudent));
     }
 
 

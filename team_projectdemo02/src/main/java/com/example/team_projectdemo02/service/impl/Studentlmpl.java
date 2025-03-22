@@ -29,8 +29,13 @@ public class Studentlmpl implements StudentService {
 
 
     @Override
-    public void add(Student student){
+    public void add(Student student) {
         studentMapper.insertStudent(student);
+    }
+
+    @Override
+    public void delete(String id){
+        studentMapper.deleteStudentById(id);
     }
     @Override
     public void addStudentRedis(Student student) {
@@ -75,20 +80,25 @@ public class Studentlmpl implements StudentService {
 //    分页查询
     @Override
     public BasicPageResultVO<Student> getStudentPage(PageStudent pageStudent){
-//        获取分页参数
+//        引入pageStudent类中的数据，分别赋值给Integer类型的两个变量值，获取分页参数
         Integer currentPage = pageStudent.getCurrent();
         Integer pageSize = pageStudent.getPageSize();
 
-//        创建分页对象
+//        根据请求参数创建分页对象，请求参数就是括号里的内容（当前页，每一页的数据个数）Page<Student>的Page是MPLUS框架提供的工具类，Student就是所要查询的表
         Page<Student> page = new Page<>(currentPage, pageSize);
 
-//        创建查询条件
+//        创建查询条件，相对于上面那条的创建对象，为什么这个括号里面没有东西
         QueryWrapper<Student> selectQuery = new QueryWrapper<>();
 
-//        id不是null时，需要添加id查询条件
+//        自己创建查询条件，原本是输入页码和数量，不再输入数量，而是条件，搜索该页的满足条件的数据，id不是null时，需要添加id查询条件
         if (pageStudent.getId() != null){
+//          这一句就是说明，如果id不为空，则输入id=？
             selectQuery.eq("id",pageStudent.getId());
         }
+        else {
+            return null;
+        }
+//      selectPage 是Base Mapper里的,IPage是Mybatis Plus 里自带的工具类，不需要自己创建，直接使用即可
         IPage<Student> findList = studentMapper.selectPage(page, selectQuery);
 
         return createResultV0(findList, currentPage);
@@ -96,11 +106,11 @@ public class Studentlmpl implements StudentService {
 
     public BasicPageResultVO<Student> createResultV0(IPage<Student> findList, Integer currentPage) {
         BasicPageResultVO<Student> resultVO = new BasicPageResultVO<>();
-
+//      set是干什么的
         resultVO.setCurrent(findList.getCurrent());
         resultVO.setPageSize(findList.getSize());
         resultVO.setTotal(findList.getTotal());
-
+//      如果某一页的数据数量达不到所设置的pageSize，这里是条件判断语句吗
         long totalPage = findList.getTotal() % findList.getSize() == 0 ?
                 findList.getTotal() / findList.getSize() :
                 findList.getTotal() / findList.getSize() + 1;
